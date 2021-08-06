@@ -42,7 +42,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_MODEL, default=None): vol.In(
     ['zhimi.heater.mc2',
      'zhimi.heater.zb1',
-     'zhimi.heater.za2', None]),
+     'zhimi.heater.za2',
+     'zhimi.heater.za1', None]),
 })
 
 SET_ROOM_TEMP_SCHEMA = vol.Schema({
@@ -90,7 +91,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
             
             if DEVICE_MODEL == "zhimi.heater.mc2":
                 aux = device.raw_command('get_properties', [{"siid":2,"piid":5,"did":DEVICE_ID}])
-            elif DEVICE_MODEL == "zhimi.heater.zb1" or DEVICE_MODEL == "zhimi.heater.za2":
+            elif DEVICE_MODEL == "zhimi.heater.zb1" or DEVICE_MODEL == "zhimi.heater.za2" or DEVICE_MODEL == "zhimi.heater.za1":
                 aux = device.raw_command('get_properties', [{"siid":2,"piid":6}])
             else  :  
                 _LOGGER.exception('Unsupported model: %s', DEVICE_MODEL)
@@ -183,7 +184,7 @@ class MiHeater(ClimateEntity):
                 target_temperature=self._device.raw_command('get_properties', [{"did":DEVICE_ID,"siid":2,"piid":5}])
                 current_temperature=self._device.raw_command('get_properties', [{"did":DEVICE_ID,"siid":4,"piid":7}])
                 data['humidity']  = 0
-            elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" :
+            elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" or self._model == "zhimi.heater.za1" :
                 power=self._device.raw_command('get_properties', [{"siid":2,"piid":2}])
                 humidity=self._device.raw_command('get_properties', [{"siid":5,"piid":7}])
                 target_temperature=self._device.raw_command('get_properties', [{"siid":2,"piid":6}])
@@ -214,7 +215,7 @@ class MiHeater(ClimateEntity):
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-        if self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" :
+        if self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" or self._model == "zhimi.heater.za1" :
             return MIN_TEMP_ZB1 
         else:
             return MIN_TEMP
@@ -237,7 +238,7 @@ class MiHeater(ClimateEntity):
         
         if self._model == "zhimi.heater.mc2":              
             self._device.raw_command('set_properties',[{"value":int(temperature),"siid":2,"piid":5, "did":DEVICE_ID}])
-        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" :
+        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" or self._model == "zhimi.heater.za1" :
             self._device.raw_command('set_properties',[{"value":int(temperature),"siid":2,"piid":6}])
         else:  
             _LOGGER.exception('Unsupported model: %s', self._model)
@@ -250,7 +251,7 @@ class MiHeater(ClimateEntity):
         
         if self._model == "zhimi.heater.mc2":              
             self._device.raw_command('set_properties',[{"value":True,"siid":2,"piid":1, "did":DEVICE_ID}])
-        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" :
+        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" or self._model == "zhimi.heater.za1" :
             self._device.raw_command('set_properties',[{"value":True,"siid":2,"piid":2}])
         else:  
             _LOGGER.exception('Unsupported model: %s', self._model)        
@@ -263,7 +264,7 @@ class MiHeater(ClimateEntity):
         
         if self._model == "zhimi.heater.mc2":              
             self._device.raw_command('set_properties',[{"value":False,"siid":2,"piid":1, "did":DEVICE_ID}])
-        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" :
+        elif self._model == "zhimi.heater.zb1" or self._model == "zhimi.heater.za2" or self._model == "zhimi.heater.za1" :
             self._device.raw_command('set_properties',[{"value":False,"siid":2,"piid":2}])
         else:  
             _LOGGER.exception('Unsupported model: %s', self._model)    
